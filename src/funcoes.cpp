@@ -9,10 +9,13 @@ void AplicacaoTransmissora(void){
     CamadaDeAplicacaoTransmissora(mensagem);
 }
 void CamadaDeAplicacaoTransmissora (string mensagem) {
+    
     string MensagemBinaria = "";
+    //Transforma a mensagem escrita em letras em binario
     for (char& _char : mensagem) {
         MensagemBinaria +=bitset<8>(_char).to_string();
     }
+    
     int tamanho = MensagemBinaria.length();
     int Quadro[tamanho];
     
@@ -23,10 +26,8 @@ void CamadaDeAplicacaoTransmissora (string mensagem) {
         if(Quadro[i] == 48)
             Quadro[i] = 0;
         //ASCII para 1
-        else
+        if(Quadro[i] ==49)
             Quadro[i] = 1;
-        cout << Quadro[i] << " "; 
-
         CamadaFisicaTransmissora(Quadro);
     }
 }
@@ -35,7 +36,7 @@ void CamadaFisicaTransmissora(int* quadro){
     int tipoDeCodificacao = 0;
     int* fluxoBrutoDeBits; 
     switch (tipoDeCodificacao) {
-        case 0 : //codificao binaria
+        case 0 : //codificao binaria 
             //fluxoBrutoDeBits = CamadaFisicaTransmissoraCodificacaoBinaria(quadro);
             break;
         case 1 : //codificacao manchester
@@ -44,6 +45,6 @@ void CamadaFisicaTransmissora(int* quadro){
         case 2 : //codificacao manchester diferencial
             //fluxoBrutoDeBits = CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(quadro);
             break;
-    }//fim do switch/case
+    }
    // MeioDeComunicacao(fluxoBrutoDeBits);
-}//fim do metodo CamadaFisicaTransmissora
+}
