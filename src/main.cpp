@@ -1,5 +1,8 @@
+#include "funcoes.hpp"
+
 int main(void){
 
+AplicacaoTransmissora();
 
 
 
