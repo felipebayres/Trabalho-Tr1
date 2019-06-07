@@ -10,22 +10,28 @@
 #include <bitset>
 #include <stdint.h>
 #include <vector>
+#include <math.h>
+
 using namespace std;
-//Ja implementadas
+//Funcoes implementadas
 void AplicacaoTransmissora(void);
 void CamadaDeAplicacaoTransmissora(string);
 void CamadaFisicaTransmissora(int*);
+
+int* CamadaFisicaTransmissoraCodificacaoBinaria (int*);
+
+void CamadaFisicaReceptora (int*);
+int* CamadaFisicaReceptoraCodificacaoBinaria (int*); 
 
 // ----------------------------------------------------
 
 void MeioDeComunicacao(int*);
 
-int* CamadaFisicaTransmissoraCodificacaoBinaria (int*);
+
 int* CamadaFisicaTransmissoraCodificacaoManchester (int*);
 int* CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(int*);
 
-void CamadaFisicaReceptora (int*);
-int* CamadaFisicaReceptoraCodificacaoBinaria (int*); 
+
 int* CamadaFisicaReceptoraCodificacaoManchester (int*);
 int* CamadaFisicaReceptoraCodificacaoManchesterDiferencial(int*);
 
