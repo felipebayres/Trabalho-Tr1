@@ -10,7 +10,7 @@ void AplicacaoTransmissora(void){
 }
 void CamadaDeAplicacaoTransmissora (string mensagem) {
     
-    string MensagemBinaria = "";
+    /*string MensagemBinaria = "";
     //Transforma a mensagem escrita em letras em binario
     for (char& _char : mensagem) {
         MensagemBinaria +=bitset<8>(_char).to_string();
@@ -29,15 +29,53 @@ void CamadaDeAplicacaoTransmissora (string mensagem) {
         if(Quadro[i] ==49)
             Quadro[i] = 1;
         CamadaFisicaTransmissora(Quadro);
+    }*/
+
+
+
+    /* Implementacao caso queira separa em vetores, mas nao eh necessario
+       visto que pode ser usado string[i] */
+
+    uint8_t contador = 0, i;
+    uint8_t *mensagemCodificada =(uint8_t *) malloc(sizeof(uint8_t));
+    while(1) {
+        if( mensagem[contador] == '\0' ) {
+            mensagemCodificada[contador] = '\0';
+            break;
+        }
+        else {
+            mensagemCodificada[contador] = mensagem[contador];
+            contador ++;
+            mensagemCodificada = (uint8_t *)realloc(mensagemCodificada, sizeof(uint8_t));
+        }
+    }  //  end while
+    /*
+    for( i=0; i<contador; i++) {
+        std::bitset<8> x(mensagemCodificada[i]);
+        cout << x << " ";
+    } */ // exemplo da utilizacao do metodo de converter
+    CamadaFisicaTransmissora(mensagemCodificada);
+    free(mensagemCodificada);
+    cout << "\nQuadro da mensagem sendo enviado para a camada fisica transmissora:\n";
+    for( i = 0; i<contador; i++ ) {
+        std::bitset<8> x(mensagem[i]);
+        cout << x;
     }
+    cout << "\n";
 }
 
-void CamadaFisicaTransmissora(int* quadro){
-    int tipoDeCodificacao = 0;
-    int* fluxoBrutoDeBits; 
+void CamadaFisicaTransmissora(uint8_t* quadro){
+    int tipoDeCodificacao = 0, i;
+    uint8_t* fluxoBrutoDeBits; 
     switch (tipoDeCodificacao) {
-        case 0 : //codificao binaria 
-            //fluxoBrutoDeBits = CamadaFisicaTransmissoraCodificacaoBinaria(quadro);
+        case 0 : //codificao binaria
+            cout<< "Apos receber da camada transmissora e utilizar a codificacao binaria, tem o quadro:\n";
+            fluxoBrutoDeBits = CamadaFisicaTransmissoraCodificacaoBinaria(quadro);
+            for( i = 0; i<6; i++ ) {
+                std::bitset<8> x(fluxoBrutoDeBits[i]);
+                cout << x;
+            }
+            cout << "\n";
             break;
         case 1 : //codificacao manchester
             //fluxoBrutoDeBits = CamadaFisicaTransmissoraCodificacaoManchester(quadro);
@@ -56,7 +94,7 @@ void CamadaFisicaReceptora (int*  quadro)
 	switch (tipoDeDecodificacao) 
 	{
 		case 0 : //codificao binaria
-		fluxoBrutoDeBits = (int *) CamadaFisicaReceptoraCodificacaoBinaria(quadro);
+		fluxoBrutoDeBits = (int *)CamadaFisicaReceptoraCodificacaoBinaria(quadro);
 		break;
 		
       case 1 : //codificacao manchester
@@ -72,7 +110,7 @@ void CamadaFisicaReceptora (int*  quadro)
 	//CamadaDeAplicacaoReceptora(fluxoBrutoDeBits);
 }//fim do metodo CamadaFisicaTransmissora
 
-int * CamadaFisicaTransmissoraCodificacaoBinaria(int *quadro){
+uint8_t* CamadaFisicaTransmissoraCodificacaoBinaria(uint8_t *quadro){
     /*Como a entrada ja esta condizente com a codificação binaria 
     *é retornado exatamente a mesma coisa*/
     return quadro;

@@ -16,12 +16,12 @@ using namespace std;
 //Funcoes implementadas
 void AplicacaoTransmissora(void);
 void CamadaDeAplicacaoTransmissora(string);
-void CamadaFisicaTransmissora(int*);
+void CamadaFisicaTransmissora(uint8_t *);
 
-int* CamadaFisicaTransmissoraCodificacaoBinaria (int*);
+uint8_t* CamadaFisicaTransmissoraCodificacaoBinaria (uint8_t*);
 
 void CamadaFisicaReceptora (int*);
-int* CamadaFisicaReceptoraCodificacaoBinaria (int*); 
+int* CamadaFisicaReceptoraCodificacaoBinaria (int *); 
 
 // ----------------------------------------------------
 
