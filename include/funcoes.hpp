@@ -1,6 +1,6 @@
 #ifndef FUNCOES_HPP_
 #define FUNCOES_HPP_
-
+#include <sstream>
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
