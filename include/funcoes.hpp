@@ -11,7 +11,6 @@
 #include <stdint.h>
 #include <vector>
 #include <math.h>
-
 using namespace std;
 //Funcoes implementadas
 void AplicacaoTransmissora(void);
