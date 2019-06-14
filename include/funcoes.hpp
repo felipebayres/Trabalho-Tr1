@@ -24,7 +24,7 @@ int* CamadaFisicaReceptoraCodificacaoBinaria (int*);
 
 // ----------------------------------------------------
 
-void MeioDeComunicacao(int*);
+void MeioDeComunicacao(int*,int);
 
 
 int* CamadaFisicaTransmissoraCodificacaoManchester (int*);
