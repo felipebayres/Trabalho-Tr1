@@ -49,14 +49,14 @@ void CamadaFisicaTransmissora(int* quadro){
         case 1 : //codificacao manchester
             fluxoBrutoDeBits = CamadaFisicaTransmissoraCodificacaoManchester(quadro);
             cout << "Codificacao Manchester do quadro:";
-            for(int i = 0;i < tamanho; i++)
+            for(int i = 0;i < tamanho*2; i++)
                 cout << fluxoBrutoDeBits[i];
             cout << "\n";
             break;
         case 2 : //codificacao manchester diferencial
             fluxoBrutoDeBits = CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(quadro);
             cout << "Codificacao ManchesterDiferencial do quadro:";
-            for(int i = 0;i < tamanho; i++)
+            for(int i = 0;i < tamanho*2; i++)
                 cout << fluxoBrutoDeBits[i];
             cout << "\n";
             break;
