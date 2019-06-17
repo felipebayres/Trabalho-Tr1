@@ -36,7 +36,7 @@ void CamadaDeAplicacaoTransmissora (string mensagem) {
 }
 
 void CamadaFisicaTransmissora(int* quadro){
-    int tipoDeCodificacao = 2;
+    int tipoDeCodificacao = 1;
     int* fluxoBrutoDeBits = new int[tamanho];
     switch (tipoDeCodificacao) {
         case 0 : //codificao binaria 
@@ -91,7 +91,7 @@ void MeioDeComunicacao(int* FluxoBrutoDeBits,int tipoDeCodificacao){
 }
 
 void CamadaFisicaReceptora (int*  quadro) {
-	int tipoDeDecodificacao = 2; //alterar de acordo o teste
+	int tipoDeDecodificacao = 1; //alterar de acordo o teste
 	int *fluxoBrutoDeBits = new int[tamanho]; //trabalhando sempre com bits!
 	switch (tipoDeDecodificacao) {
 		case 0 : //codificao binaria
@@ -159,17 +159,19 @@ int * CamadaFisicaReceptoraCodificacaoBinaria (int *quadro ) {
   return quadro;
 }
 int * CamadaFisicaReceptoraCodificacaoManchester(int *quadro){
-    int j=0,i=0;
-    int *msg_decodificada = (int *) malloc (tamanho * sizeof (int)); 
-    for (j =0 ; j<(tamanho*2);){
-    	if ( quadro[j] == 0 && quadro[j+1] ==1) // se for "01" na codificao manchester significa que o BIT = 0
+    // Decodificação  manchester 
+    int Clock0=0,Clock1 = 1;
+    int j=0;
+    int *msg_decodificada = (int *) malloc (tamanho * 2 * sizeof (int)); // Vetor decodificado tem metade do tamanho do vetor codificado
+    for (int i =0 ; i<tamanho; i++)
+    {
+    	if ( quadro[j] == Clock0 && quadro[j+1] ==Clock1) // se for "01" na codificao manchester significa que o BIT = 0, usa os valores do clock para sincronizar
     		msg_decodificada[i] = 0;
 
-    	else if (quadro[j] == 1 && quadro[j+1] ==0)// se for "10" na codificao manchester significa que o BIT = 1
+    	else if (quadro[j] == Clock1 && quadro[j+1] ==Clock0)// se for "10" na codificao manchester significa que o BIT = 1
     		msg_decodificada[i] = 1;
 
     	j+=2;
-        i+=1;
     }
     return msg_decodificada;
 }
@@ -207,15 +209,19 @@ int * CamadaFisicaTransmissoraCodificacaoBinaria(int *quadro){
 
 }
 int * CamadaFisicaTransmissoraCodificacaoManchester(int *quadro){
-    int Clock = 1; // considerando clock = 01
-	int *vet_codificado = (int *) malloc (2*tamanho* sizeof (int)); //vetor codificado tem o dobro do tamanho do quadro
+   int Clock0=0,Clock1 = 1; // considerando clocks = 01
+	int *vet_codificado = (int *) malloc (2*tamanho * sizeof (int)); // vetor codificado tem o dobro do tamanho do quadro
 	int i=0,j=0;
-	for (i=0; i<tamanho; i++){
-		if ( (Clock ^ quadro[i] ) == 1 ){ // xor == 1? codifica manchester como "01"
+
+	for (i=0; i<tamanho*2; i++)
+	{
+		if ( ( Clock0 ^ quadro[i] ) == 0  &&  (Clock1 ^ quadro[i] ) == 1 ) // xor == 0 && xor == 1? codifica manchester como "01"
+		{
 			vet_codificado[j] =  0; 
 			vet_codificado[j+1] =  1;
 		}
-		else if ( (Clock  ^ quadro[i] ) == 0){ //// xor = 0?  significa que é bit = 1  no quadro,logo vira 2 no Manchester por conta do clock
+		else if (   (Clock0 ^ quadro[i] ) == 1   &&   (Clock1 ^ quadro[i] ) == 0  )  // xor == 1 && xor == 0??  significa que é bit = 1  no quadro,logo vira "10" no Manchester por conta do clock
+		{
 			vet_codificado[j] = 1;
 			vet_codificado[j+1] = 0;	
 		}
