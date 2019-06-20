@@ -12,7 +12,7 @@
 #include <vector>
 #include <math.h>
 using namespace std;
-//Funcoes implementadas
+
 void AplicacaoTransmissora(void);
 void CamadaDeAplicacaoTransmissora(string);
 void CamadaFisicaTransmissora(int*);
@@ -21,9 +21,6 @@ int* CamadaFisicaTransmissoraCodificacaoBinaria (int*);
 
 void CamadaFisicaReceptora (int*);
 int* CamadaFisicaReceptoraCodificacaoBinaria (int*); 
-
-// ----------------------------------------------------
-
 void MeioDeComunicacao(int*,int);
 
 
@@ -37,5 +34,27 @@ int* CamadaFisicaReceptoraCodificacaoManchesterDiferencial(int*);
 void CamadaDeAplicacaoReceptora (int*);
 void AplicacaoReceptora (string);
 
+//Trabalho 2 
+    // Camada transmissao
+    void CamadaEnlaceDadosTransmissora (int*); // Implementada
+    void CamadaEnlaceDadosTransmissoraEnquadramento (int*);
+    void CamadaEnlaceDadosTransmissoraControleDeErro(int*); // Implementada
+    void CamadaEnlaceDadosTransmissoraControleDeFluxo (int*);
+
+    void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(int*);
+    void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(int*);
+    void CamadaEnlaceDadosTransmissoraControleDeErroCRC(int*);
+    void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(int*);
+
+    //Camada receptora
+    void CamadaEnlaceDadosReceptora(int*); //Implementada
+    void CamadaEnlaceDadosReceptoraEnquadramento (int*);
+    void CamadaEnlaceDadosReceptoraControleDeErro(int*); //Implementada
+    void CamadaEnlaceDadosReceptoraControleDeFluxo (int*);
+
+    void CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(int*);
+    void CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(int*);
+    void CamadaEnlaceDadosReceptoraControleDeErroCRC(int*);
+    void CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(int*);
 
 #endif

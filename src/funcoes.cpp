@@ -32,11 +32,11 @@ void CamadaDeAplicacaoTransmissora (string mensagem) {
             Quadro[i] = 1;
     }
     printf("\n");
-    CamadaFisicaTransmissora(Quadro);
+    CamadaEnlaceDadosTransmissora(Quadro);
 }
 
 void CamadaFisicaTransmissora(int* quadro){
-    int tipoDeCodificacao = 1;
+    int tipoDeCodificacao = 2;
     int* fluxoBrutoDeBits = new int[tamanho];
     switch (tipoDeCodificacao) {
         case 0 : //codificao binaria 
@@ -66,14 +66,26 @@ void CamadaFisicaTransmissora(int* quadro){
 void MeioDeComunicacao(int* FluxoBrutoDeBits,int tipoDeCodificacao){
     int* FluxoBrutoDeBitsPontoA;
     int* FluxoBrutoDeBitsPontoB;
+    int erro, PorcentagemDeErros;
+    PorcentagemDeErros = 0; //10%, 20%, 30%, 40%, ..., 100%
+    
     if(tipoDeCodificacao==1 || tipoDeCodificacao==2){
         FluxoBrutoDeBitsPontoA = new int[tamanho*2];
         FluxoBrutoDeBitsPontoB = new int[tamanho*2];
-    
         //Transferencia de Bits
         for(int i = 0; i < (tamanho*2);i++){
             FluxoBrutoDeBitsPontoA[i] = FluxoBrutoDeBits[i];
-            FluxoBrutoDeBitsPontoB[i] = FluxoBrutoDeBitsPontoA[i];
+            //Probabilidade de dar certo
+            if ((rand()%100) > PorcentagemDeErros )
+                FluxoBrutoDeBitsPontoB[i] = FluxoBrutoDeBitsPontoA[i];
+                
+            //Probabilidade de dar errado
+            else{
+                if ( FluxoBrutoDeBitsPontoA[i] == 1)
+                    FluxoBrutoDeBitsPontoB[i] = 0;
+                else if ( FluxoBrutoDeBitsPontoA[i] == 0)
+                    FluxoBrutoDeBitsPontoB[i] = 1;
+            }  
         }
     }
     else{
@@ -82,16 +94,22 @@ void MeioDeComunicacao(int* FluxoBrutoDeBits,int tipoDeCodificacao){
         //Transferencia de Bits
         for(int i = 0; i < tamanho;i++){
             FluxoBrutoDeBitsPontoA[i] = FluxoBrutoDeBits[i];
-            FluxoBrutoDeBitsPontoB[i] = FluxoBrutoDeBitsPontoA[i];
+            if ((rand()%100) > PorcentagemDeErros )
+                FluxoBrutoDeBitsPontoB[i] = FluxoBrutoDeBitsPontoA[i];
+                //Probabilidade de dar certo
+            else{
+                if ( FluxoBrutoDeBitsPontoA[i] == 1)
+                    FluxoBrutoDeBitsPontoB[i] = 0;
+                else if ( FluxoBrutoDeBitsPontoA[i] == 0)
+                    FluxoBrutoDeBitsPontoB[i] = 1;
+            }  
         }
     }
-    
-    
     CamadaFisicaReceptora(FluxoBrutoDeBitsPontoB);
 }
 
 void CamadaFisicaReceptora (int*  quadro) {
-	int tipoDeDecodificacao = 1; //alterar de acordo o teste
+	int tipoDeDecodificacao = 2; //alterar de acordo o teste
 	int *fluxoBrutoDeBits = new int[tamanho]; //trabalhando sempre com bits!
 	switch (tipoDeDecodificacao) {
 		case 0 : //codificao binaria
@@ -112,7 +130,7 @@ void CamadaFisicaReceptora (int*  quadro) {
         cout << fluxoBrutoDeBits[i];
     cout << "\n";
     //chama proxima camada
-	CamadaDeAplicacaoReceptora(fluxoBrutoDeBits);
+	CamadaEnlaceDadosReceptora(fluxoBrutoDeBits);
 }//fim do metodo CamadaFisicaTransmissora
 
 void CamadaDeAplicacaoReceptora(int *quadro){ 
@@ -153,8 +171,6 @@ void AplicacaoReceptora(string mensagem) {
     cout <<mensagem ;
     cout << endl;
 }//fim do metodoAplicacaoReceptora
-
-
 int * CamadaFisicaReceptoraCodificacaoBinaria (int *quadro ) {
   return quadro;
 }
@@ -258,3 +274,103 @@ int * CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(int *quadro){
 	}
 	return vet_codificado;
 }
+
+
+
+//Trabalho 2
+
+void CamadaEnlaceDadosTransmissora (int* quadro) {
+    
+    CamadaEnlaceDadosTransmissoraEnquadramento(quadro);
+    CamadaEnlaceDadosTransmissoraControleDeErro(quadro);
+    CamadaEnlaceDadosTransmissoraControleDeFluxo(quadro);
+    //chama proxima camada
+    CamadaFisicaTransmissora(quadro);
+}//fim do metodo CamadaEnlaceDadosTransmissora (Implementada)
+
+void CamadaEnlaceDadosTransmissoraControleDeErro (int* quadro) {
+    int tipoDeControleDeErro = 0; //alterar de acordo com o teste
+    switch (tipoDeControleDeErro) {
+        case 0 : //bit de paridade par
+            CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(quadro);
+            break;
+        case 1 : //bit de paridade impar
+            CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(quadro);
+            break;
+        case 2 : //CRC
+            CamadaEnlaceDadosTransmissoraControleDeErroCRC(quadro);
+            break;
+        case 3 : //codigo de Hamming
+            CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(quadro);
+            break;
+    }//fim do switch/case
+}//fim do metodo CamadaEnlaceDadosTransmissoraControleDeErro
+
+void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar (int* quadro){
+    //implementacao do algoritmo
+}//fim do metodo CamadaEnlaceDadosTransmissoraControledeErroBitParidadePar
+
+void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar (int* quadro){
+    //implementacao do algoritmo
+}//fim do metodo CamadaEnlaceDadosTransmissoraControledeErroBitParidadeImpar
+
+void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming (int* quadro){
+    //implementacao do algoritmo
+}//fim do metodo CamadaEnlaceDadosTransmissoraControleDeErroCodigoDehamming
+
+void CamadaEnlaceDadosTransmissoraControleDeErroCRC (int* quadro){
+    //implementacao do algoritmo
+    //usar polinomio CRC-32(IEEE 802)
+}//fim do metodo CamadaEnlaceDadosTransmissoraControledeErroCRC
+
+
+
+// Parte da recepcao 
+
+
+
+void CamadaEnlaceDadosReceptora (int* quadro) {
+    CamadaEnlaceDadosReceptoraEnquadramento(quadro);
+    CamadaEnlaceDadosReceptoraControleDeErro(quadro);
+    CamadaEnlaceDadosReceptoraControleDeFluxo(quadro);
+    //chama proxima camada
+    CamadaDeAplicacaoReceptora(quadro);
+}//fim do metodo CamadaEnlaceDadosReceptora
+
+void CamadaEnlaceDadosReceptoraEnquadramento (int* quadro) {
+    //algum codigo aqui
+}//fim do metodo CamadaEnlaceDadosReceptoraEnquadramento
+void CamadaEnlaceDadosReceptoraControleDeErro (int* quadro) {
+    int tipoDeControleDeErro = 0; //alterar de acordo com o teste
+    switch (tipoDeControleDeErro) {
+        case 0 : //bit de paridade par
+            CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(quadro);
+            break;
+        case 1 : //bit de paridade impar
+            CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(quadro);
+            break;
+        case 2 : //CRC
+            CamadaEnlaceDadosReceptoraControleDeErroCRC(quadro);
+            break;
+        case 3 : //codigo de hamming
+            CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(quadro);
+            break;
+    }//fim do switch/case
+}//fim do metodo CamadaEnlaceDadosReceptoraControleDeErro
+void CamadaEnlaceDadosReceptoraControleDeFluxo (int* quadro) {
+    //algum codigo aqui
+}//fim do metodo CamadaEnlaceDadosReceptoraControleDeFluxo
+
+void CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadePar (int * quadro) {
+    //implementacao do algoritmo para VERIFICAR SE HOUVE ERRO
+}//fim do metodo CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadePar
+void CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadeImpar (int * quadro) {
+    //implementacao do algoritmo para VERIFICAR SE HOUVE ERRO
+}//fim do metodo CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadeImpar
+void CamadaEnlaceDadosReceptoraControleDeErroCRC (int * quadro) {
+    //implementacao do algoritmo para VERIFICAR SE HOUVE ERRO
+    //usar polinomio CRC-32(IEEE 802)
+}//fim do metodo CamadaEnlaceDadosReceptoraControleDeErroCRC
+void CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming (int * quadro) {
+    //implementacao do algoritmo para VERIFICAR SE HOUVE ERRO
+}//fim do metodo CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming
