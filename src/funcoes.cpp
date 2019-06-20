@@ -76,7 +76,7 @@ void MeioDeComunicacao(int* FluxoBrutoDeBits,int tipoDeCodificacao){
         for(int i = 0; i < (tamanho*2);i++){
             FluxoBrutoDeBitsPontoA[i] = FluxoBrutoDeBits[i];
             //Probabilidade de dar certo
-            if ((rand()%100) > PorcentagemDeErros )
+            if ((rand()%100) >= PorcentagemDeErros )
                 FluxoBrutoDeBitsPontoB[i] = FluxoBrutoDeBitsPontoA[i];
                 
             //Probabilidade de dar errado
@@ -305,6 +305,13 @@ void CamadaEnlaceDadosTransmissoraControleDeErro (int* quadro) {
             break;
     }//fim do switch/case
 }//fim do metodo CamadaEnlaceDadosTransmissoraControleDeErro
+void CamadaEnlaceDadosTransmissoraEnquadramento (int* quadro) {
+    //algum codigo aqui
+}//fim do metodo CamadaEnlaceDadosTransmissoraEnquadramentos
+void CamadaEnlaceDadosTransmissoraControleDeFluxo (int* quadro) {
+    //algum codigo aqui
+}//fim do metodo CamadaEnlaceDadosTransmissoraControleDeFluxo
+
 
 void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar (int* quadro){
     //implementacao do algoritmo
@@ -344,10 +351,10 @@ void CamadaEnlaceDadosReceptoraControleDeErro (int* quadro) {
     int tipoDeControleDeErro = 0; //alterar de acordo com o teste
     switch (tipoDeControleDeErro) {
         case 0 : //bit de paridade par
-            CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(quadro);
+           CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadePar(quadro);
             break;
         case 1 : //bit de paridade impar
-            CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(quadro);
+            CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadeImpar(quadro);
             break;
         case 2 : //CRC
             CamadaEnlaceDadosReceptoraControleDeErroCRC(quadro);

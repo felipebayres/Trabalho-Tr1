@@ -35,26 +35,26 @@ void CamadaDeAplicacaoReceptora (int*);
 void AplicacaoReceptora (string);
 
 //Trabalho 2 
-    // Camada transmissao
-    void CamadaEnlaceDadosTransmissora (int*); // Implementada
-    void CamadaEnlaceDadosTransmissoraEnquadramento (int*);
-    void CamadaEnlaceDadosTransmissoraControleDeErro(int*); // Implementada
-    void CamadaEnlaceDadosTransmissoraControleDeFluxo (int*);
+// Camada transmissao
+void CamadaEnlaceDadosTransmissora(int*); // Implementada
+void CamadaEnlaceDadosTransmissoraEnquadramento(int*);
+void CamadaEnlaceDadosTransmissoraControleDeErro(int*); // Implementada
+void CamadaEnlaceDadosTransmissoraControleDeFluxo(int*);
 
-    void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(int*);
-    void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(int*);
-    void CamadaEnlaceDadosTransmissoraControleDeErroCRC(int*);
-    void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(int*);
+void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(int*);
+void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(int*);
+void CamadaEnlaceDadosTransmissoraControleDeErroCRC(int*);
+void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(int*);
 
-    //Camada receptora
-    void CamadaEnlaceDadosReceptora(int*); //Implementada
-    void CamadaEnlaceDadosReceptoraEnquadramento (int*);
-    void CamadaEnlaceDadosReceptoraControleDeErro(int*); //Implementada
-    void CamadaEnlaceDadosReceptoraControleDeFluxo (int*);
+//Camada receptora
+void CamadaEnlaceDadosReceptora(int*); //Implementada
+void CamadaEnlaceDadosReceptoraEnquadramento (int*);
+void CamadaEnlaceDadosReceptoraControleDeErro(int*); //Implementada
+void CamadaEnlaceDadosReceptoraControleDeFluxo (int*);
 
-    void CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(int*);
-    void CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(int*);
-    void CamadaEnlaceDadosReceptoraControleDeErroCRC(int*);
-    void CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(int*);
+void CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadePar(int*);
+void CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadeImpar(int*);
+void CamadaEnlaceDadosReceptoraControleDeErroCRC(int*);
+void CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(int*);
 
 #endif
