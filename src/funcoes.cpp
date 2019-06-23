@@ -1,5 +1,7 @@
 #include "funcoes.hpp"
+// Tamanho da string
 int TamanhoMensagem = 0;
+// Tamanho da string em bits
 int tamanho = 0;
 void AplicacaoTransmissora(void){
     
@@ -36,7 +38,7 @@ void CamadaDeAplicacaoTransmissora (string mensagem) {
 }
 
 void CamadaFisicaTransmissora(int* quadro){
-    int tipoDeCodificacao = 2;
+    int tipoDeCodificacao = 0;
     int* fluxoBrutoDeBits = new int[tamanho];
     switch (tipoDeCodificacao) {
         case 0 : //codificao binaria 
@@ -67,7 +69,7 @@ void MeioDeComunicacao(int* FluxoBrutoDeBits,int tipoDeCodificacao){
     int* FluxoBrutoDeBitsPontoA;
     int* FluxoBrutoDeBitsPontoB;
     int erro, PorcentagemDeErros;
-    PorcentagemDeErros = 0; //10%, 20%, 30%, 40%, ..., 100%
+    PorcentagemDeErros = 50; //10%, 20%, 30%, 40%, ..., 100%
     
     if(tipoDeCodificacao==1 || tipoDeCodificacao==2){
         FluxoBrutoDeBitsPontoA = new int[tamanho*2];
@@ -109,7 +111,7 @@ void MeioDeComunicacao(int* FluxoBrutoDeBits,int tipoDeCodificacao){
 }
 
 void CamadaFisicaReceptora (int*  quadro) {
-	int tipoDeDecodificacao = 2; //alterar de acordo o teste
+	int tipoDeDecodificacao = 0; //alterar de acordo o teste
 	int *fluxoBrutoDeBits = new int[tamanho]; //trabalhando sempre com bits!
 	switch (tipoDeDecodificacao) {
 		case 0 : //codificao binaria
@@ -289,7 +291,7 @@ void CamadaEnlaceDadosTransmissora (int* quadro) {
 }//fim do metodo CamadaEnlaceDadosTransmissora (Implementada)
 
 void CamadaEnlaceDadosTransmissoraControleDeErro (int* quadro) {
-    int tipoDeControleDeErro = 0; //alterar de acordo com o teste
+    int tipoDeControleDeErro = 1; //alterar de acordo com o teste
     switch (tipoDeControleDeErro) {
         case 0 : //bit de paridade par
             CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(quadro);
@@ -314,16 +316,124 @@ void CamadaEnlaceDadosTransmissoraControleDeFluxo (int* quadro) {
 
 
 void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar (int* quadro){
-    //implementacao do algoritmo
+    int contador_bit1 = 0 , i;
+	int bit_paridade = 2; // valor simbolico
+	for (i=0 ; i< tamanho; i++) // for que conta a quantidade de bits 1 presentes no quadro
+    {
+		if(quadro[i] == 1)
+			contador_bit1++;
+	}
+
+	int *vet_paridade = (int *) malloc ( (tamanho + 1) * sizeof (int)); // quadro codificado com o bit de paridade, ou seja, tamanho = tamanho do quadro + 1 
+
+	if( contador_bit1 % 2 == 0) // é par a quantidade de bits 1?
+		bit_paridade = 0;	
+	else // se for impar
+		bit_paridade = 1;
+	
+    vet_paridade = quadro; // faz a cópia
+    vet_paridade[tamanho] = bit_paridade; // acrescenta o bit de paridade no final
+	quadro = vet_paridade;
+    cout << "Quadro com o bit de paridade par:";
+    for (i = 0; i <= tamanho; i++)
+       cout << (quadro[i]) ;
+    cout << "\n";
+    tamanho = tamanho + 1;
 }//fim do metodo CamadaEnlaceDadosTransmissoraControledeErroBitParidadePar
 
 void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar (int* quadro){
-    //implementacao do algoritmo
+    int  i;	
+	int bit_paridade=2 , valor_quadro =0 , expoente =0 , base = 2;
+   
+	for(i = tamanho -1; i>= 0; i--){      
+        valor_quadro += quadro[i] *  ( pow(base,expoente) );
+        expoente++;
+    }
+    // if e else que avalia apenas se é par ou impar
+    if(valor_quadro % 2 == 0) // valor decimal do quadro é par? coloca 0
+        bit_paridade = 1;
+    else // se não ,o valor do quadro é impar, logo coloque 1
+        bit_paridade = 0;
+	
+    int *vet_paridade_impar = (int *) malloc ( (tamanho + 1) * sizeof (int)); // quadro codificado com o bit de paridade, ou seja, tamanho = tamanho do quadro + 1 
+
+	vet_paridade_impar = quadro;
+   	vet_paridade_impar[tamanho] = bit_paridade; // coloca no bit mais a direita o bit de paridade
+
+   	quadro = vet_paridade_impar; // quadro agora tem o bit de paridade
+    cout << "Quadro formado com o bit de paridade impar:";
+   	for (i = 0; i <= tamanho; i++)
+        cout << quadro[i];
+   cout << "\n";
+   tamanho = tamanho + 1;
 }//fim do metodo CamadaEnlaceDadosTransmissoraControledeErroBitParidadeImpar
 
 void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming (int* quadro){
-    //implementacao do algoritmo
-}//fim do metodo CamadaEnlaceDadosTransmissoraControleDeErroCodigoDehamming
+    int TamanhoHamming;
+    //Calcula o tamanho do codigo de hamming
+    for (int i = 0; ;++i)
+    {
+        if (pow(2, i) >= (tamanho + i + 1)){
+            TamanhoHamming = tamanho + i;
+            break;
+         }
+    }
+
+    int QuadroHamming[TamanhoHamming];
+    int k = TamanhoHamming - tamanho;
+    
+    //Inicializar o vetor com valores diferentes de 1 e 0
+    for (int i = 0; i < TamanhoHamming ; i++)
+        QuadroHamming[i] = 2;
+    
+    
+    // Essa parte coloca cada bit do quadro no lugar correto do novo quadro. Mas sem calcular os coeficientes
+    for (int position = 0, expoente = 0,i = 0; i < tamanho; ++position){
+        if (pow (2, expoente) == (position + 1))
+        {
+            ++expoente;
+            continue;
+        }
+        QuadroHamming[position] = quadro[i];
+        i++;
+    }
+    
+    /*
+    cout << endl;
+    cout << "QuadroHamming sem os coeficientes:";
+    for (int i = 0 ; i < TamanhoHamming ; i++)
+        cout << QuadroHamming[i];
+    */
+   
+    // Calcula os coeficientes do quadro 
+    bitset<10> bits;
+    for (int expoente = 0; expoente < k; ++expoente)
+    {
+        int PosicaoCoeficiente = 0;
+        int ContagemDe1 = 0;
+        for (size_t c = 1; c <= TamanhoHamming; ++c)
+        {
+                bits = c;
+                if (bits.test(expoente)) // expoente from 0 to 3
+                {
+                    if (QuadroHamming[c - 1] == 2)
+                        PosicaoCoeficiente = c - 1;
+                    else if (QuadroHamming[c - 1] == 0)
+                        ++ContagemDe1;
+                }
+        }   
+        if (ContagemDe1 % 2 != 0)
+            QuadroHamming[PosicaoCoeficiente] = 1;
+        else
+            QuadroHamming[PosicaoCoeficiente] = 0;
+    }
+    cout << "\nQuadroHamming : ";
+    for (int i = 0 ; i < TamanhoHamming ; i++)
+        cout << QuadroHamming[i];
+        cout << "\n";
+    //return QuadroHamming;    
+}  //implementacao do algoritmo
+   //fim do metodo CamadaEnlaceDadosTransmissoraControleDeErroCodigoDehamming
 
 void CamadaEnlaceDadosTransmissoraControleDeErroCRC (int* quadro){
     //implementacao do algoritmo
@@ -348,7 +458,7 @@ void CamadaEnlaceDadosReceptoraEnquadramento (int* quadro) {
     //algum codigo aqui
 }//fim do metodo CamadaEnlaceDadosReceptoraEnquadramento
 void CamadaEnlaceDadosReceptoraControleDeErro (int* quadro) {
-    int tipoDeControleDeErro = 0; //alterar de acordo com o teste
+    int tipoDeControleDeErro = 1; //alterar de acordo com o teste
     switch (tipoDeControleDeErro) {
         case 0 : //bit de paridade par
            CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadePar(quadro);
@@ -369,10 +479,58 @@ void CamadaEnlaceDadosReceptoraControleDeFluxo (int* quadro) {
 }//fim do metodo CamadaEnlaceDadosReceptoraControleDeFluxo
 
 void CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadePar (int * quadro) {
-    //implementacao do algoritmo para VERIFICAR SE HOUVE ERRO
+    // camada receptora retira o bit de paridade do quadro
+    int ocorreu_erro = 0 , contador_bit1=0 , i;
+    int *vet_decodificado = (int *) malloc ( tamanho * sizeof (int)); // quadro decodificado SEM o bit de paridade, ou seja, tamanho = tamanho do quadro
+    for (i =0; i< tamanho; i++){
+        vet_decodificado[i] = quadro[i];
+   		if(quadro[i] == 1)
+   			contador_bit1++;
+    }
+   
+   
+   // Primeiro comparacao, analise se o bit de paridade for =0 e a quantidades de bits 1 é impar, se for, ocorreu erro
+   //Segunda comparacao, verifica se o bit de paridade é 1 e se a quantidades de bits 1 é par, se for, houve erro tambem
+   //Lembrando que esse metodo, não é possível detectar qual o bit que ocorreu o erro
+   if( ( quadro[tamanho] == 0 && (contador_bit1 % 2 != 0) )  || ( quadro[tamanho] == 1 && (contador_bit1 % 2 == 0) ) )
+   {
+   		ocorreu_erro=1;
+   		cout << "Ocorreu erro pelo metodo Paridade PAR!\n";
+   }
+
+   quadro = vet_decodificado; // quadro original, sem o bit de paridade
+
+   for (i = 0; i < tamanho; i++)
+      cout << quadro[i];
+   cout << "\n";
 }//fim do metodo CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadePar
 void CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadeImpar (int * quadro) {
-    //implementacao do algoritmo para VERIFICAR SE HOUVE ERRO
+    // quadro representa o quadro codificado com paridade [tamanho +1]
+    int ocorreu_erro = 0, valor_quadro = 0 ,base = 2 , expoente = 0 , i;
+      
+    int *vet_decodificado = (int *) malloc ( tamanho * sizeof (int)); // quadro decodificado SEM o bit de paridade, ou seja, tamanho = tamanho do quadro
+    for(i = tamanho -1; i>= 0; i--){      
+        valor_quadro += quadro[i] *  ( pow(base,expoente) );
+        expoente++;
+    }
+   for (i =0; i< tamanho; i++)
+        vet_decodificado[i] = quadro[i];
+
+   
+    // vet_paridade_impar[tamanho+1] = 0;
+    // Primeiro comparacao, analise se o bit de paridade for =0 e valor decimal do quadro é impar, se for, ocorreu erro
+    //Segunda comparacao, verifica se o bit de paridade é 1 e se a valor decial do quadro é par, se for, houve erro tambem
+    //Lembrando que esse metodo, não é possível detectar qual o bit que ocorreu o erro
+   if( ( quadro[tamanho] == 0 && (valor_quadro % 2 != 0) )  || ( quadro[tamanho] == 1 && (valor_quadro % 2 == 0) ) ){
+   		ocorreu_erro=1;
+   		cout << "Ocorreu erro pelo metodo Paridade IMPAR!\n";
+   }
+   quadro = vet_decodificado;
+
+   for (i = 0; i < tamanho; i++)
+        cout << quadro[i];
+   cout << "\n";
+
 }//fim do metodo CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadeImpar
 void CamadaEnlaceDadosReceptoraControleDeErroCRC (int * quadro) {
     //implementacao do algoritmo para VERIFICAR SE HOUVE ERRO
