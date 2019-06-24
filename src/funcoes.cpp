@@ -2,11 +2,11 @@
 // Tamanho da string
 int TamanhoMensagem = 0;
 // Tamanho da string em bits
-int tamanho = 0;
+int tamanho = 0,tamanho2 = 0;
 void AplicacaoTransmissora(void){
     
     std::string mensagem;
-    cout << "Digite uma mensagem:" << endl;
+    cout << "Digite uma mensagem:";
     std::getline(std::cin, mensagem);
     //chama a proxima camada
     CamadaDeAplicacaoTransmissora(mensagem);
@@ -21,6 +21,7 @@ void CamadaDeAplicacaoTransmissora (string mensagem) {
     }
     
     tamanho = MensagemBinaria.length();
+    tamanho2 = tamanho;
     int Quadro[tamanho];
     cout << "Quadro formado pela CamadaDeAplicaçãoTransmissora:";
     for (int i = 0 ; i < MensagemBinaria.length(); i++) {
@@ -39,26 +40,26 @@ void CamadaDeAplicacaoTransmissora (string mensagem) {
 
 void CamadaFisicaTransmissora(int* quadro){
     int tipoDeCodificacao = 0;
-    int* fluxoBrutoDeBits = new int[tamanho];
+    int* fluxoBrutoDeBits = new int[tamanho2];
     switch (tipoDeCodificacao) {
         case 0 : //codificao binaria 
             fluxoBrutoDeBits = CamadaFisicaTransmissoraCodificacaoBinaria(quadro);
             cout << "Codificacao binaria do quadro:";
-            for(int i = 0;i < tamanho; i++)
+            for(int i = 0;i < tamanho2; i++)
                 cout << fluxoBrutoDeBits[i];
             cout << "\n";
             break;
         case 1 : //codificacao manchester
             fluxoBrutoDeBits = CamadaFisicaTransmissoraCodificacaoManchester(quadro);
             cout << "Codificacao Manchester do quadro:";
-            for(int i = 0;i < tamanho*2; i++)
+            for(int i = 0;i < tamanho2*2; i++)
                 cout << fluxoBrutoDeBits[i];
             cout << "\n";
             break;
         case 2 : //codificacao manchester diferencial
             fluxoBrutoDeBits = CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(quadro);
             cout << "Codificacao ManchesterDiferencial do quadro:";
-            for(int i = 0;i < tamanho*2; i++)
+            for(int i = 0;i < tamanho2*2; i++)
                 cout << fluxoBrutoDeBits[i];
             cout << "\n";
             break;
@@ -69,13 +70,13 @@ void MeioDeComunicacao(int* FluxoBrutoDeBits,int tipoDeCodificacao){
     int* FluxoBrutoDeBitsPontoA;
     int* FluxoBrutoDeBitsPontoB;
     int erro, PorcentagemDeErros;
-    PorcentagemDeErros = 50; //10%, 20%, 30%, 40%, ..., 100%
+    PorcentagemDeErros = 0; //10%, 20%, 30%, 40%, ..., 100%
     
     if(tipoDeCodificacao==1 || tipoDeCodificacao==2){
-        FluxoBrutoDeBitsPontoA = new int[tamanho*2];
-        FluxoBrutoDeBitsPontoB = new int[tamanho*2];
+        FluxoBrutoDeBitsPontoA = new int[tamanho2*2];
+        FluxoBrutoDeBitsPontoB = new int[tamanho2*2];
         //Transferencia de Bits
-        for(int i = 0; i < (tamanho*2);i++){
+        for(int i = 0; i < (tamanho2*2);i++){
             FluxoBrutoDeBitsPontoA[i] = FluxoBrutoDeBits[i];
             //Probabilidade de dar certo
             if ((rand()%100) >= PorcentagemDeErros )
@@ -91,10 +92,10 @@ void MeioDeComunicacao(int* FluxoBrutoDeBits,int tipoDeCodificacao){
         }
     }
     else{
-        FluxoBrutoDeBitsPontoA = new int[tamanho];
-        FluxoBrutoDeBitsPontoB = new int[tamanho];
+        FluxoBrutoDeBitsPontoA = new int[tamanho2];
+        FluxoBrutoDeBitsPontoB = new int[tamanho2];
         //Transferencia de Bits
-        for(int i = 0; i < tamanho;i++){
+        for(int i = 0; i < tamanho2;i++){
             FluxoBrutoDeBitsPontoA[i] = FluxoBrutoDeBits[i];
             if ((rand()%100) > PorcentagemDeErros )
                 FluxoBrutoDeBitsPontoB[i] = FluxoBrutoDeBitsPontoA[i];
@@ -112,8 +113,12 @@ void MeioDeComunicacao(int* FluxoBrutoDeBits,int tipoDeCodificacao){
 
 void CamadaFisicaReceptora (int*  quadro) {
 	int tipoDeDecodificacao = 0; //alterar de acordo o teste
-	int *fluxoBrutoDeBits = new int[tamanho]; //trabalhando sempre com bits!
-	switch (tipoDeDecodificacao) {
+	int *fluxoBrutoDeBits = new int[tamanho2]; //trabalhando sempre com bits!
+	cout <<"Quadro que a CamadaFisicaReceptora recebe:";
+    for(int i = 0 ; i < tamanho2 ; i++)
+        cout << quadro[i];
+    cout << "\n";
+    switch (tipoDeDecodificacao) {
 		case 0 : //codificao binaria
 		fluxoBrutoDeBits = CamadaFisicaReceptoraCodificacaoBinaria(quadro);    
         break;
@@ -128,7 +133,7 @@ void CamadaFisicaReceptora (int*  quadro) {
 
 	}//fim do switch/case
 	cout << "FluxoDeBits depois da decodificação:";
-    for(int i = 0;i < tamanho; i++)
+    for(int i = 0;i < tamanho2; i++)
         cout << fluxoBrutoDeBits[i];
     cout << "\n";
     //chama proxima camada
@@ -180,8 +185,8 @@ int * CamadaFisicaReceptoraCodificacaoManchester(int *quadro){
     // Decodificação  manchester 
     int Clock0=0,Clock1 = 1;
     int j=0;
-    int *msg_decodificada = (int *) malloc (tamanho * 2 * sizeof (int)); // Vetor decodificado tem metade do tamanho do vetor codificado
-    for (int i =0 ; i<tamanho; i++)
+    int *msg_decodificada = (int *) malloc (tamanho2 * 2 * sizeof (int)); // Vetor decodificado tem metade do tamanho do vetor codificado
+    for (int i =0 ; i<tamanho2; i++)
     {
     	if ( quadro[j] == Clock0 && quadro[j+1] ==Clock1) // se for "01" na codificao manchester significa que o BIT = 0, usa os valores do clock para sincronizar
     		msg_decodificada[i] = 0;
@@ -195,9 +200,9 @@ int * CamadaFisicaReceptoraCodificacaoManchester(int *quadro){
 }
 int * CamadaFisicaReceptoraCodificacaoManchesterDiferencial(int *quadro){
     //int Clock = 1; // considerando clock = 01
-	int *vet_decodificado = (int *) malloc (tamanho* sizeof (int)); //vetor codificado tem o dobro do tamanho do quadro
+	int *vet_decodificado = (int *) malloc (tamanho2* sizeof (int)); //vetor codificado tem o dobro do tamanho do quadro
 	int i=0,j=0,primeira_vez=0;
-	for (j=0; j<(tamanho*2);){
+	for (j=0; j<(tamanho2*2);){
         if(primeira_vez==0){
             if (quadro[j]==0){ // clock começa como 01
 			    vet_decodificado[i] = 1;
@@ -228,10 +233,10 @@ int * CamadaFisicaTransmissoraCodificacaoBinaria(int *quadro){
 }
 int * CamadaFisicaTransmissoraCodificacaoManchester(int *quadro){
    int Clock0=0,Clock1 = 1; // considerando clocks = 01
-	int *vet_codificado = (int *) malloc (2*tamanho * sizeof (int)); // vetor codificado tem o dobro do tamanho do quadro
+	int *vet_codificado = (int *) malloc (2*tamanho2 * sizeof (int)); // vetor codificado tem o dobro do tamanho do quadro
 	int i=0,j=0;
 
-	for (i=0; i<tamanho*2; i++)
+	for (i=0; i<tamanho2*2; i++)
 	{
 		if ( ( Clock0 ^ quadro[i] ) == 0  &&  (Clock1 ^ quadro[i] ) == 1 ) // xor == 0 && xor == 1? codifica manchester como "01"
 		{
@@ -249,9 +254,9 @@ int * CamadaFisicaTransmissoraCodificacaoManchester(int *quadro){
 }
 int * CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(int *quadro){
     //int Clock = 1; // considerando clock = 01
-	int *vet_codificado = (int *) malloc (2*tamanho* sizeof (int)); //vetor codificado tem o dobro do tamanho do quadro
+	int *vet_codificado = (int *) malloc (2*tamanho2* sizeof (int)); //vetor codificado tem o dobro do tamanho do quadro
 	int i=0,j=0,primeira_vez=0;
-	for (i=0; i<tamanho; i++){
+	for (i=0; i<tamanho2; i++){
         if(primeira_vez==0){
             if (quadro[i]==0){ // clock começa como 01
 			    vet_codificado[j] = 1; 
@@ -287,20 +292,24 @@ void CamadaEnlaceDadosTransmissora (int* quadro) {
     CamadaEnlaceDadosTransmissoraControleDeErro(quadro);
     CamadaEnlaceDadosTransmissoraControleDeFluxo(quadro);
     //chama proxima camada
-    CamadaFisicaTransmissora(quadro);
+    //CamadaFisicaTransmissora(quadro);
 }//fim do metodo CamadaEnlaceDadosTransmissora (Implementada)
 
 void CamadaEnlaceDadosTransmissoraControleDeErro (int* quadro) {
-    int tipoDeControleDeErro = 1; //alterar de acordo com o teste
+    int tipoDeControleDeErro = 2; //alterar de acordo com o teste
+    int* quadrotemporario;
     switch (tipoDeControleDeErro) {
         case 0 : //bit de paridade par
             CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(quadro);
+            CamadaFisicaTransmissora(quadro);
             break;
         case 1 : //bit de paridade impar
             CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(quadro);
+            CamadaFisicaTransmissora(quadro);
             break;
         case 2 : //CRC
-            CamadaEnlaceDadosTransmissoraControleDeErroCRC(quadro);
+            quadrotemporario = CamadaEnlaceDadosTransmissoraControleDeErroCRC(quadro);
+            CamadaFisicaTransmissora(quadrotemporario);
             break;
         case 3 : //codigo de Hamming
             CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(quadro);
@@ -308,7 +317,15 @@ void CamadaEnlaceDadosTransmissoraControleDeErro (int* quadro) {
     }//fim do switch/case
 }//fim do metodo CamadaEnlaceDadosTransmissoraControleDeErro
 void CamadaEnlaceDadosTransmissoraEnquadramento (int* quadro) {
-    //algum codigo aqui
+    int i;
+    int *Quadro_enquadrado = (int *) malloc ( (tamanho + 1) * sizeof (int));
+    Quadro_enquadrado[0] = tamanho + 1;
+    for(i = 1;i <= ( tamanho + 1);i++){
+        Quadro_enquadrado[i] = quadro[i-1];
+    }
+	for(i = 0;i <= (tamanho + 1);i++){
+        quadro[i] = Quadro_enquadrado[i];
+    }
 }//fim do metodo CamadaEnlaceDadosTransmissoraEnquadramentos
 void CamadaEnlaceDadosTransmissoraControleDeFluxo (int* quadro) {
     //algum codigo aqui
@@ -370,6 +387,7 @@ void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar (int* quadro){
 
 void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming (int* quadro){
     int TamanhoHamming;
+    
     //Calcula o tamanho do codigo de hamming
     for (int i = 0; ;++i)
     {
@@ -427,17 +445,67 @@ void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming (int* quadro){
         else
             QuadroHamming[PosicaoCoeficiente] = 0;
     }
-    cout << "\nQuadroHamming : ";
-    for (int i = 0 ; i < TamanhoHamming ; i++)
+    cout << "QuadroHamming : ";
+    for (int i = 0 ; i < TamanhoHamming ; i++){
         cout << QuadroHamming[i];
-        cout << "\n";
-    //return QuadroHamming;    
+        quadro[i] = QuadroHamming[i];
+    }
+    tamanho = TamanhoHamming;
+    cout << "\n";    
 }  //implementacao do algoritmo
    //fim do metodo CamadaEnlaceDadosTransmissoraControleDeErroCodigoDehamming
-
-void CamadaEnlaceDadosTransmissoraControleDeErroCRC (int* quadro){
-    //implementacao do algoritmo
+int* CamadaEnlaceDadosTransmissoraControleDeErroCRC (int* quadro){
+     //implementacao do algoritmo
     //usar polinomio CRC-32(IEEE 802)
+    int *polinomiocrc = new int[33];
+    int *restoenvio = new int[32];
+    polinomiocrc[0] = 1; polinomiocrc[6] = 1; polinomiocrc[9] = 1;
+    polinomiocrc[10] = 1;
+    polinomiocrc[16] = 1; polinomiocrc[20] = 1; polinomiocrc[21] = 1;
+    polinomiocrc[22] = 1;
+    polinomiocrc[24] = 1; polinomiocrc[25] = 1; polinomiocrc[27] = 1;
+    polinomiocrc[28] = 1;
+    polinomiocrc[30] = 1; polinomiocrc[31] = 1; polinomiocrc[32] = 1;
+
+    int *vetorenvioCRC = new int[tamanho+32];
+    for( int i=0; i<tamanho; i++)
+        vetorenvioCRC[i] = quadro[i];
+    // print do vetor com os 32 bits zero adicionados
+    cout << "Quadro recebido e adicionados os 32 0's para a operacao CRC: ";
+    for (int i=0; i<tamanho+32; i++)
+        cout << vetorenvioCRC[i];
+    cout <<"\n";
+    // fim print
+
+    // o CRC utiliza a operacao OU(exclusivo) para realizar a divisao, assim:
+    for(int i=0; i<33; i++) {
+        for(int j=0; j<33; j++) {
+            if ( vetorenvioCRC[j+i] == polinomiocrc[j] ) // se os bits forem 11 ou 00
+                vetorenvioCRC[j+i] = 0;
+            else
+                //  caso onde os bits sao 10 ou 01
+                vetorenvioCRC[j+i] = 1;
+        }
+    }
+    // separa os 32 bits que devem ser adicionados a mensagem enviada
+    for (int i=0; i<32; i++)
+        restoenvio[i] = vetorenvioCRC[tamanho+i];
+
+    // adiciona a mensagem aos novos 32 bits
+    for( int i=0; i<tamanho; i++)
+        vetorenvioCRC[i] = quadro[i];
+    for (int i=0; i<32; i++)
+        vetorenvioCRC[tamanho+i] = restoenvio[i];
+
+    //
+    cout<< "Mensagem após a codificacao crc: ";
+    for (int i=0; i<tamanho+32; i++)
+        cout << vetorenvioCRC[i];
+    cout <<"\n";
+    // *****************
+    // falta retornar o quadro
+    tamanho2 = tamanho2 + 32;
+    return vetorenvioCRC;
 }//fim do metodo CamadaEnlaceDadosTransmissoraControledeErroCRC
 
 
@@ -458,7 +526,7 @@ void CamadaEnlaceDadosReceptoraEnquadramento (int* quadro) {
     //algum codigo aqui
 }//fim do metodo CamadaEnlaceDadosReceptoraEnquadramento
 void CamadaEnlaceDadosReceptoraControleDeErro (int* quadro) {
-    int tipoDeControleDeErro = 1; //alterar de acordo com o teste
+    int tipoDeControleDeErro = 2; //alterar de acordo com o teste
     switch (tipoDeControleDeErro) {
         case 0 : //bit de paridade par
            CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadePar(quadro);
@@ -533,9 +601,89 @@ void CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadeImpar (int * quadro) {
 
 }//fim do metodo CamadaEnlaceDadosReceptoraControleDeErroBitDeParidadeImpar
 void CamadaEnlaceDadosReceptoraControleDeErroCRC (int * quadro) {
-    //implementacao do algoritmo para VERIFICAR SE HOUVE ERRO
+   //implementacao do algoritmo para VERIFICAR SE HOUVE ERRO
     //usar polinomio CRC-32(IEEE 802)
+    int *polinomiocrc = new int[33];
+    int *restoenvio = new int[32];
+    polinomiocrc[0] = 1; polinomiocrc[6] = 1; polinomiocrc[9] = 1;
+    polinomiocrc[10] = 1;
+    polinomiocrc[16] = 1; polinomiocrc[20] = 1; polinomiocrc[21] = 1;
+    polinomiocrc[22] = 1;
+    polinomiocrc[24] = 1; polinomiocrc[25] = 1; polinomiocrc[27] = 1;
+    polinomiocrc[28] = 1;
+    polinomiocrc[30] = 1; polinomiocrc[31] = 1; polinomiocrc[32] = 1;
+    int *vetorenvioCRC = new int[tamanho+32];
+    for( int i=0; i<tamanho; i++)
+        vetorenvioCRC[i] = quadro[i];
+    // o CRC utiliza a operacao OU(exclusivo) para realizar a divisao, assim:
+    for(int i=0; i<33; i++) {
+        for(int j=0; j<33; j++) {
+            if ( quadro[j+i] == polinomiocrc[j] ) // se os bits forem 11 ou 00
+                quadro[j+i] = 0;
+            else
+                //  caso onde os bits sao 10 ou 01
+                quadro[j+i] = 1;
+        }
+    }
+    // verificar se houve erro, caso uma das 32 posicoes finais do vetor nao seja 0, houve erro
+    for(int j = 0; j<32; j++) {
+        if ( quadro[tamanho+j] != 0 ) {
+            cout << "Erro detectado na transmissao da mensagem!\n";
+            break;
+        }
+    }
+    cout << "Quadro apos a divisao pelo polinomio do CRC: ";
+    for (int i=0; i<tamanho+32; i++)
+        cout << quadro[i];
+    cout <<"\n";
+    for( int i=0; i<tamanho; i++)
+        quadro[i] = vetorenvioCRC[i];
+    return;
 }//fim do metodo CamadaEnlaceDadosReceptoraControleDeErroCRC
 void CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming (int * quadro) {
-    //implementacao do algoritmo para VERIFICAR SE HOUVE ERRO
+    bitset<10> output (0);
+    bitset<10> bits (0);
+    size_t hammingcodesize = tamanho;
+    int i, TamanhoQuadroOriginal;
+    // Calcular o tamanho do quadro original
+    
+    for (i = 0; pow(2, i) < hammingcodesize; ++i)
+        ;
+    TamanhoQuadroOriginal = tamanho - i;
+    
+    size_t k = tamanho - TamanhoQuadroOriginal;
+    bool Erro = false;
+    for (size_t c = 0; c < k; ++c)
+    {
+        int countof1s = 0;
+        for (size_t index = 1; index <= tamanho; ++index)
+        {
+            bits = index;
+            if (bits.test(c))
+            {
+                if (quadro[index - 1] == 1)
+                    ++countof1s;
+            }
+        }
+        if (countof1s % 2 != 0)
+        {
+            Erro = true;
+        }
+    }
+    if (Erro)
+        cout << "Houve um erro no codigo de Hamming\n";
+    int expoente = 0,j=0;
+    
+    cout << "Quadro da camada de enlace:";
+    for (int i = 1;i <= tamanho ; i++){
+        if(i == pow(2,expoente)){
+            expoente++;
+        }
+        else{
+            quadro[j] = quadro[i-1];
+            cout << quadro[j];
+            j++;
+        }
+    }
+    cout << "\n";
 }//fim do metodo CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming

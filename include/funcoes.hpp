@@ -43,7 +43,7 @@ void CamadaEnlaceDadosTransmissoraControleDeFluxo(int*);
 
 void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(int*);
 void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(int*);
-void CamadaEnlaceDadosTransmissoraControleDeErroCRC(int*);
+int* CamadaEnlaceDadosTransmissoraControleDeErroCRC(int*);
 void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(int*); // Implementada
 
 //Camada receptora
