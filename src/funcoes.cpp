@@ -288,9 +288,7 @@ int * CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(int *quadro){
 
 void CamadaEnlaceDadosTransmissora (int* quadro) {
     
-    CamadaEnlaceDadosTransmissoraEnquadramento(quadro);
     CamadaEnlaceDadosTransmissoraControleDeErro(quadro);
-    CamadaEnlaceDadosTransmissoraControleDeFluxo(quadro);
     //chama proxima camada
     //CamadaFisicaTransmissora(quadro);
 }//fim do metodo CamadaEnlaceDadosTransmissora (Implementada)
@@ -316,20 +314,6 @@ void CamadaEnlaceDadosTransmissoraControleDeErro (int* quadro) {
             break;
     }//fim do switch/case
 }//fim do metodo CamadaEnlaceDadosTransmissoraControleDeErro
-void CamadaEnlaceDadosTransmissoraEnquadramento (int* quadro) {
-    int i;
-    int *Quadro_enquadrado = (int *) malloc ( (tamanho + 1) * sizeof (int));
-    Quadro_enquadrado[0] = tamanho + 1;
-    for(i = 1;i <= ( tamanho + 1);i++){
-        Quadro_enquadrado[i] = quadro[i-1];
-    }
-	for(i = 0;i <= (tamanho + 1);i++){
-        quadro[i] = Quadro_enquadrado[i];
-    }
-}//fim do metodo CamadaEnlaceDadosTransmissoraEnquadramentos
-void CamadaEnlaceDadosTransmissoraControleDeFluxo (int* quadro) {
-    //algum codigo aqui
-}//fim do metodo CamadaEnlaceDadosTransmissoraControleDeFluxo
 
 
 void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar (int* quadro){
@@ -515,9 +499,7 @@ int* CamadaEnlaceDadosTransmissoraControleDeErroCRC (int* quadro){
 
 
 void CamadaEnlaceDadosReceptora (int* quadro) {
-    CamadaEnlaceDadosReceptoraEnquadramento(quadro);
     CamadaEnlaceDadosReceptoraControleDeErro(quadro);
-    CamadaEnlaceDadosReceptoraControleDeFluxo(quadro);
     //chama proxima camada
     CamadaDeAplicacaoReceptora(quadro);
 }//fim do metodo CamadaEnlaceDadosReceptora
